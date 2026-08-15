@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Temperature Converter</title>
+
+    <style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+
+    height:100vh;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    overflow:hidden;
+
+    background:linear-gradient(135deg,#74ebd5,#ACB6E5);
+
+}
+
+/* Background */
+
+.background{
+
+    position:absolute;
+
+    width:100%;
+
+    height:100%;
+
+}
+
+/* Thermometer */
+
+.thermometer{
+
+    position:absolute;
+
+    left:70px;
+
+    top:50%;
+
+    transform:translateY(-50%);
+
+    width:45px;
+
+    height:320px;
+
+    border:6px solid white;
+
+    border-radius:30px;
+
+    overflow:hidden;
+
+    background:rgba(255,255,255,.2);
+
+}
+
+.mercury{
+
+    position:absolute;
+
+    bottom:0;
+
+    width:100%;
+
+    height:20%;
+
+    background:#2196F3;
+
+    transition:height 1s ease,
+               background 1s ease;
+
+}
+
+@keyframes spin{
+
+    from{
+
+        transform:rotate(0deg);
+
+    }
+
+    to{
+
+        transform:rotate(360deg);
+
+    }
+
+}
+
+@keyframes float{
+
+    0%,100%{
+
+        transform:translateY(0);
+
+    }
+
+    50%{
+
+        transform:translateY(-20px);
+
+    }
+
+}
+
+/* Glass Card */
+
+.container{
+
+    position:relative;
+
+    z-index:100;
+
+    width:420px;
+
+    padding:35px;
+
+    border-radius:20px;
+
+    background:white;
+
+    backdrop-filter:blur(15px);
+
+    border:1px solid rgba(255,255,255,.4);
+
+    box-shadow:0 10px 30px rgba(0,0,0,.2);
+
+    text-align:center;
+
+}
+
+.container h1{
+
+    color:black;
+
+    margin-bottom:25px;
+
+}
+
+input{
+
+    width:100%;
+
+    padding:12px;
+
+    border:2px solid black;
+    border-radius:10px;
+
+    font-size:18px;
+
+    margin-bottom:20px;
+
+}
+
+input:focus{
+
+    outline:none;
+
+}
+
+.dropdowns{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:20px;
+
+}
+
+.dropdowns span{
+
+    color:white;
+
+    font-size:28px;
+
+}
+
+select{
+
+    width:150px;
+
+    padding:10px;
+
+    border:none;
+
+    border-radius:8px;
+
+    font-size:16px;
+
+}
+
+button{
+
+    width:100%;
+
+    padding:12px;
+
+    border:none;
+
+    border-radius:10px;
+
+    background:green;
+
+    color:white;
+
+    font-size:18px;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+}
+
+button:hover{
+
+    background:#e64a19;
+
+    transform:scale(1.05);
+
+}
+
+#result{
+
+    margin-top:25px;
+
+    color:black;
+
+    font-size:24px;
+
+    font-weight:bold;
+
+}
+
+    </style>
+
+
+<script>
+
+
+function convertTemperature() {
+
+    const temp = parseFloat(document.getElementById("temperature").value);
+
+    const from = document.getElementById("fromUnit").value;
+
+    const to = document.getElementById("toUnit").value;
+
+    const result = document.getElementById("result");
+
+    const mercury = document.querySelector(".mercury");
+
+    if (isNaN(temp)) {
+
+        result.innerHTML = "Please enter a valid temperature!";
+
+        return;
+
+    }
+
+    let celsius;
+
+    switch (from) {
+
+        case "C":
+
+            celsius = temp;
+
+            break;
+
+        case "F":
+
+            celsius = (temp - 32) * 5 / 9;
+
+            break;
+
+        case "K":
+
+            celsius = temp - 273.15;
+
+            break;
+
+    }
+
+    let converted;
+
+    switch (to) {
+
+        case "C":
+
+            converted = celsius;
+
+            break;
+
+        case "F":
+
+            converted = (celsius * 9 / 5) + 32;
+
+            break;
+
+        case "K":
+
+            converted = celsius + 273.15;
+
+            break;
+
+    }
+
+    result.innerHTML =
+
+        "Result : " +
+
+        converted.toFixed(2) +
+
+        " °" +
+
+        to;
+
+    let display = Math.max(-20,
+
+        Math.min(100,
+
+            celsius));
+
+    let percent =
+
+        ((display + 20) / 120) * 100;
+
+    mercury.style.height =
+
+        percent + "%";
+
+    if (celsius <= 0) {
+
+        mercury.style.background = "#2196F3";
+
+    }
+
+    else if (celsius <= 35) {
+
+        mercury.style.background = "#4CAF50";
+
+    }
+
+    else {
+
+        mercury.style.background = "#F44336";
+
+    }
+
+}
+
+</script>
+</head>
+
+<body>
+
+    <!-- Background Animation -->
+
+    <div class="background">
+
+        <div class="thermometer">
+
+            <div class="mercury"></div>
+
+        </div>
+
+
+    </div>
+
+
+    <!-- Converter -->
+
+    <div class="container">
+
+        <h1>🌡 Temperature Converter</h1>
+
+        <input type="number"
+               id="temperature"
+               placeholder="Enter Temperature">
+
+        <div class="dropdowns">
+
+            <select id="fromUnit" style="border: 2px solid black;" >
+
+                <option value="C">Celsius</option>
+                <option value="F">Fahrenheit</option>
+                <option value="K">Kelvin</option>
+
+            </select>
+
+            <span>⇄</span>
+
+            <select id="toUnit" style="border: 2px solid black;" >
+
+                <option value="C">Celsius</option>
+                <option value="F">Fahrenheit</option>
+                <option value="K">Kelvin</option>
+
+            </select>
+
+        </div>
+
+        <button onclick="convertTemperature()">
+
+            Convert
+
+        </button>
+
+        <h2 id="result">
+
+            Result : --
+
+        </h2>
+
+    </div>
+
+</body>
+
+</html>
